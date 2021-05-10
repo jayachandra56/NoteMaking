@@ -1,0 +1,15 @@
+.container-fluid{
+    padding: 0px;
+}
+.header-sub{
+    background-color: #fcba03;
+    padding: 20px 100px;
+    width: 100%;
+}
+.logo-header{
+    width: fit-content;
+}
+
+.DialogContainer{
+    width:50%;
+}
