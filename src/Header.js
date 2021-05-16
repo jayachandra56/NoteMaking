@@ -6,9 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+// import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Snackbar, SnackbarContent, TextareaAutosize } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { logout } from './redux/loginActions';
 
 class Header extends Component{
     constructor(props){
@@ -29,7 +32,7 @@ class Header extends Component{
         this.getTitle=this.getTitle.bind(this);
         this.submitNote=this.submitNote.bind(this);
         this.handleCloseSnack=this.handleCloseSnack.bind(this);
-        
+        // this.handleLogout=this.handleLogout.bind(this)
         this.handleCancel=this.handleCancel.bind(this);
         
     }
@@ -97,6 +100,13 @@ class Header extends Component{
         })
       }
 
+      componentDidUpdate(){
+          if(!this.props.isLogged){
+            const { history } = this.props;
+            if(history) history.push('/');
+          }
+      }
+
     render(){
         return(
             <div className="container-fluid header">
@@ -104,6 +114,7 @@ class Header extends Component{
                 <div className="header-sub d-flex justify-content-between">
                     <h3 className="logo-header">Note Making</h3>
                     <button className="btn btn-primary" onClick={this.handleClickOpen}>Create Note</button>
+                    <button className="btn btn-primary" onClick={this.props.logoutM}>Logout</button>
                 </div>
                 <div className="DialogContainer">
                     <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title" >
@@ -134,7 +145,7 @@ class Header extends Component{
                 open={this.state.opensnack}
                 onClose={this.handleCloseSnack}
                 message={this.state.result.message}
-                key={this.state.vertical +this.state. horizontal}
+                key={this.state.vertical+this.state.horizontal}
                 >
                     <SnackbarContent style={{
                         backgroundColor:'green',  
@@ -147,4 +158,21 @@ class Header extends Component{
         );
     }
 }
-export default Header
+
+const mapStateToProps=state=>{
+    console.log("props..logout")
+    return{
+        isLogged:state.isLogged,
+        isLoading:state.isLoading,
+        userNumber:state.userNumber,
+        error:state.error
+    }
+}
+
+const mapDispatchToProps= dispatch=>{
+    console.log("dispatch..logout")
+    return{
+        logoutM:()=>dispatch(logout())
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)( withRouter(Header))

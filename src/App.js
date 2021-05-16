@@ -1,20 +1,29 @@
-import React,{useState,Component} from 'react';
-import logo from './logo.svg';
+import React,{Component} from 'react';
 import './App.css';
 import Note from './Note'
 import Header from './Header'
+import store from './store'
+import { withRouter } from 'react-router-dom';
+
 
 class App extends Component{
   constructor(){
     super()
     this.state={
-      notes:[]
+      notes:[],
+      isLogged:store.getState().isLogged
     }
     this.fetchData=this.fetchData.bind(this);
     this.updateItems=this.updateItems.bind(this);
   }
 
   componentDidMount(){
+    if(this.state.isLogged){
+      console.log('logged')
+    }else{
+      const { history } = this.props;
+      if(history) history.push('/');
+    }
     this.fetchData();
   }
 
@@ -25,11 +34,10 @@ class App extends Component{
   }
 
   fetchData(){
-    fetch('http://chandra.getenjoyment.net/getNotes.php',{
+    fetch('http://chandra.getenjoyment.net/reactPractice/getNotes.php',{
     method:'GET'
     }).then(response => response.json().then(res => {
       console.log("HTTP Responseeee"+res.data)
-      const data=res.data;
       this.updateItems(res.data);
       })).catch(error=>{
           console.log(error);
@@ -41,10 +49,11 @@ class App extends Component{
     return(
       <div className="App">
       <Header methodCall={this.fetchData}/>
-      {this.state.notes.map(note => <Note heading={note.title} content={note.content}/>)}
+      {this.state.notes.map(note => <Note key={note.id} heading={note.title} content={note.content}/>)}
       
     </div>
     )
   }
 }
-export default App;
+
+export default withRouter(App);
