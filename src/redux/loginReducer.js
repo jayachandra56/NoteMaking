@@ -2,6 +2,7 @@ import { USER_AUTH, USER_AUTH_FAILED, USER_AUTH_SUCCESS, USER_LOGOUT } from "./c
 
 const initialUserState = {
     userNumber: '',
+    UserName:'',
     isLogged: false,
     isLoading: false,
     error: ''
@@ -16,9 +17,11 @@ const loginReducer = (state = initialUserState, action) => {
             }
         }
         case USER_AUTH_SUCCESS: {
+            console.log(action.data.usernumber+"==="+action.data.username)
             return {
                 ...state,
-                userNumber: action.data,
+                userNumber: action.data.usernumber,
+                UserName:action.data.username,
                 isLogged: true,
                 isLoading: false
             }

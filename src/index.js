@@ -8,6 +8,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom'
 
 import App from './App';
 import Login from './Login';
+import Signup from './Signup';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.render(
         <Route exact path="/" component={Login}/>
         <Route path="/dashboard" exact component={App} /> 
         <Route path="/login" exact component={Login} />
+        <Route path="/register" exact component={Signup} />
       </Router>
      
     </Provider>

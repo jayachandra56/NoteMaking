@@ -5,10 +5,10 @@ export const loginAction=()=>{
         type:USER_AUTH
    }
 }
-export const loginActionSuccess=(usernumber)=>{
+export const loginActionSuccess=(usernumber,username)=>{
     return {
         type:USER_AUTH_SUCCESS,
-        data:usernumber
+        data:{usernumber,username}
    }
 }
 
@@ -36,7 +36,7 @@ export const fetchUser=(username,password)=>{
         })
         .then(response=>response.json().then(res=> {
             if(res.login){
-                dispatch(loginActionSuccess(res.number))
+                dispatch(loginActionSuccess(res.number,res.name))
             }else{
                 dispatch(loginActionFailed(res.message))
             }

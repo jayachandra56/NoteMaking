@@ -8,6 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Snackbar, SnackbarContent, TextareaAutosize } from '@material-ui/core';
+import store from './store';
+import { withRouter } from 'react-router-dom';
 
 function Note(props){
     const {heading,content}=props;
@@ -16,16 +18,17 @@ function Note(props){
     const [submitText,setSubmitText]=React.useState('Submit');
     const [open,setOpen]=React.useState(false);
     const [opensnack,setOpenstack]=React.useState(false);
+    const [message, setmessage] = React.useState('')
     let vertical='bottom';
     let horizontal='center';
-    function clickHandle(){
+    function clickNote(){
             setOpen(true);
     };
-    const handleClose=()=>{
+    const dialogClose=()=>{
             setOpenstack(false);
             setOpen(false);
     }
-    const handleCancel=()=>{
+    const dialogCancel=()=>{
         setOpenstack(false);
         setOpen(false);
 }
@@ -36,18 +39,38 @@ const getContent=(val)=>{
     setContent(val);
 }
 const submitNote=()=>{
-
-}
+    setSubmitText('Updating..')
+    let formData = new FormData();
+    formData.append('title', titleTemp);
+    formData.append('content', contentTemp);
+    formData.append('number', store.getState().userNumber);
+    const requestOptions = {
+        method: 'POST',
+        body:formData
+    };
+    fetch('http://chandra.getenjoyment.net/reactPractice/editNote.php', requestOptions)
+    .then(response => response.json().then(res => {
+        setmessage(res.message)
+        setOpen(false)
+        setOpenstack(true)
+        props.updatedItem()
+}))
+    .catch(error =>{
+        setmessage(error)
+        setOpenstack(true)
+    })
+    // .then(data => this.setState({ postId: data.id }));
+  }
     return(
         <>
-        <div className="container" onClick={clickHandle}>
+        <div className="container" onClick={clickNote}>
             <h3 className="text">{heading}</h3>
             <p className="text">{content}</p>
         </div>
         <div className="DialogContainer">
-                    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" >
+                    <Dialog open={open} onClose={dialogClose} aria-labelledby="form-dialog-title" >
                     <DialogTitle id="form-dialog-title"><TextField
-                    autoFocus
+                    disabled
                     value={titleTemp}
                     margin="dense"
                     id="name"
@@ -57,10 +80,10 @@ const submitNote=()=>{
                     onChange={(e)=>setTitle(e.target.value)}
                     /></DialogTitle>
                     <DialogContent>
-                    <TextareaAutosize value={contentTemp} aria-label="minimum height" rowsMin={10} placeholder="Enetr your note" onChange={(e)=>setContent(e.target.value)} />
+                    <TextareaAutosize value={contentTemp} autoFocus aria-label="minimum height" rowsMin={10} placeholder="Enetr your note" onChange={(e)=>setContent(e.target.value)} />
                     </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCancel} color="primary">
+                    <Button onClick={dialogCancel} color="primary">
                         Cancel
                     </Button>
                     <Button onClick={submitNote} color="primary">
@@ -72,17 +95,17 @@ const submitNote=()=>{
                 <Snackbar
                 
                 open={opensnack}
-                // onClose={handleCloseSnack}
+                onClose={dialogCancel}
                 // message={result.message}
                 key={vertical + horizontal}
                 >
                     <SnackbarContent style={{
                         backgroundColor:'green',  
                         }}
-                        // message={<span id="client-snackbar">{this.state.result.message}</span>}
+                        message={<span id="client-snackbar">{message}</span>}
                     />
                 </Snackbar>
         </>
     )
 }
-export default Note;
+export default withRouter(Note);

@@ -32,8 +32,8 @@ const Login=(props)=> {
                         <Card.Body>
                             <Form >
                                 <Form.Group controlId="formBasicEmail">
-                                    <Form.Label>Email address</Form.Label>
-                                    <Form.Control type="username" placeholder="Username" onChange={(e)=>setusernamevalue(e.target.value)} />
+                                    <Form.Label>Number</Form.Label>
+                                    <Form.Control type="username" placeholder="Number" onChange={(e)=>setusernamevalue(e.target.value)} />
                     
                                 </Form.Group>
 
@@ -49,7 +49,7 @@ const Login=(props)=> {
                                 
                             </Form>
                         </Card.Body>
-                        <Card.Footer className="text-muted ">Not Registered?<Card.Text className="text-primary">Click here</Card.Text></Card.Footer>
+                        <Card.Footer className="text-muted ">Not Registered?<Card.Text className="text-primary btn" onClick={()=>{props.history.push('/register')}}>Click here</Card.Text></Card.Footer>
                     </Card>
                 </div>
             </div>

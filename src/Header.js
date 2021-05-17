@@ -58,7 +58,6 @@ class Header extends Component{
             open:false,
             opensnack:true
         });
-        this.props.methodCall();
       };
       submitNote(){
         this.setState({
@@ -67,14 +66,16 @@ class Header extends Component{
         let formData = new FormData();
         formData.append('title', this.state.title);
         formData.append('content', this.state.content);
+        formData.append('number', this.props.userNumber);
         const requestOptions = {
             method: 'POST',
             
             body:formData
         };
-        fetch('http://chandra.getenjoyment.net/createNote.php', requestOptions)
+        fetch('http://chandra.getenjoyment.net/reactPractice/createNote.php', requestOptions)
         .then(response => response.json().then(res => {
             console.log("HTTP Response"+res.message)
+            this.props.updatedItem()
             this.setState({
                 result:res
             },()=>{
@@ -87,7 +88,7 @@ class Header extends Component{
             console.log("Error in fetch"+error);
         })
         // .then(data => this.setState({ postId: data.id }));
-      };
+      }
 
       getContent(content){
         this.setState({
@@ -113,6 +114,7 @@ class Header extends Component{
                 {/* <OpenFormDialog/> */}
                 <div className="header-sub d-flex justify-content-between">
                     <h3 className="logo-header">Note Making</h3>
+                    <h4 className="logo-header">Welcome, Mr.{this.props.UserName}</h4>
                     <button className="btn btn-primary" onClick={this.handleClickOpen}>Create Note</button>
                     <button className="btn btn-primary" onClick={this.props.logoutM}>Logout</button>
                 </div>
@@ -160,17 +162,17 @@ class Header extends Component{
 }
 
 const mapStateToProps=state=>{
-    console.log("props..logout")
+   
     return{
         isLogged:state.isLogged,
         isLoading:state.isLoading,
         userNumber:state.userNumber,
+        UserName:state.UserName,
         error:state.error
     }
 }
 
 const mapDispatchToProps= dispatch=>{
-    console.log("dispatch..logout")
     return{
         logoutM:()=>dispatch(logout())
     }
